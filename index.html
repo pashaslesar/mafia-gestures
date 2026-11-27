@@ -81,7 +81,7 @@ section.block>p.hint{margin:0 0 20px;color:var(--soft);max-width:62ch;font-size:
 .g .fig{width:76px;height:76px;border-radius:50%;background:var(--paper);display:grid;place-items:center;overflow:hidden}
 .g .fig svg{width:62px;height:64px}
 .g.two .fig{width:76px}
-.g .tag{font-family:var(--caps);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.fig img,.chip img,.qfig img{width:100%;height:100%;object-fit:cover;display:block}.g .tag{font-family:var(--caps);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
 .g h3{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 2px;line-height:1.2}
 .g p{margin:0;font-size:14px;color:var(--soft);line-height:1.5}
 
@@ -130,7 +130,7 @@ section.block>p.hint{margin:0 0 20px;color:var(--soft);max-width:62ch;font-size:
 
 /* тренажёр */
 .quiz{display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:center}
-.qfig{width:220px;height:220px;border-radius:50%;background:var(--paper);display:grid;place-items:center}
+.qfig{width:220px;height:220px;border-radius:50%;background:var(--paper);display:grid;place-items:center;overflow:hidden}
 .qfig svg{width:150px;height:156px}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
 .opts button{background:none;border:1px solid var(--ink);border-radius:30px;padding:10px 16px;cursor:pointer;text-align:left;font-family:var(--serif);font-size:17px}
@@ -178,21 +178,19 @@ footer p{font-size:13px;color:var(--soft);margin:10px auto 0;max-width:52ch}
   <footer><p>Контакт для связи: <a href="https://t.me/zhenjoo">@zhenjoo</a> (Telegram)</p></footer>
 </div>
 <script>
-/* ---------- заглушки под фото жестов ---------- */
-const GKEYS=['d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','civ','maf','don','sher','ask','ifg','agree','cross','slap','nom','wave','plus','minus','hook','eye'];
+/* ---------- фото жестов (img/*.webp) ---------- */
+const PHOTO={d3:'3',d11:'11',civ:'cerveny',maf:'cerny',don:'don',sher:'sherif',ask:'vopros',ifg:'esli',cross:'net',slap:'vystavit-na-golosovanije',gun:'pistolet',wave:'ahalaj',plus:'plus',minus:'minus'};
 const GX={};
-for(const k of GKEYS)GX[k]=()=>`<svg data-photo="${k}" viewBox="0 0 100 100" role="img" aria-label="Место для фото" style="width:100%;height:100%"><rect x="3" y="3" width="94" height="94" rx="47" fill="none" stroke="#3c3a44" stroke-opacity=".35" stroke-dasharray="4 4"/><text x="50" y="55" text-anchor="middle" font-family="Jost,Arial,sans-serif" font-size="13" letter-spacing="2" fill="#3c3a44" fill-opacity=".5">ФОТО</text></svg>`;
+for(const k in PHOTO)GX[k]=()=>`<img src="img/${PHOTO[k]}.webp" alt="Жест" loading="lazy">`;
 
 /* ---------- контент ---------- */
 const STAR='<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 2 L56 40 L76 24 L60 44 L98 50 L60 56 L76 76 L56 60 L50 98 L44 60 L24 76 L40 56 L2 50 L40 44 L24 24 L44 40 Z" fill="#f6ecdf"/></svg>';
 const STAGES=[
  {g:'База',t:['цифры','и роли'],name:'Цифры и роли',sum:'Номер игрока и четыре знака ролей. Из них собирается любая фраза за столом.'},
- {g:'База',t:['фразы','без слов'],name:'Фразы без слов',sum:'Вопрос, «выставляй», «если», согласие и несогласие. Складываем жесты в предложения.'},
+ {g:'База',t:['фразы','без слов'],name:'Фразы без слов',sum:'Вопрос, «выставляй», «если», «нет» и «пистолет». Складываем жесты в предложения.'},
  {g:'Голосование',t:['попил','стола'],name:'Попил стола',sum:'Как голосованием выяснить, на чьей стороне первый игрок, который почти весь круг молчит.'},
- {g:'Чёрные',t:['ночная','договорка'],name:'Договорка',sum:'Дон за несколько секунд ночи задаёт команде, в кого стрелять дальше.'},
- {g:'Чёрные',t:['хук','шериф найден'],name:'Хук',sum:'Как чёрные показывают друг другу номер шерифа так, что красные ничего не замечают.'}
+ {g:'Чёрные',t:['ночная','договорка'],name:'Договорка',sum:'Дон за несколько секунд ночи задаёт команде, в кого стрелять дальше.'}
 ];
-const TWO=/^(d6|d7|d8|d9|d10|nom|slap)$/;
 const gi=(g,tag,title,txt)=>`<div class="g"><div class="fig">${GX[g]()}</div><div><div class="tag">${tag}</div><h3>${title}</h3><p>${txt}</p></div></div>`;
 const chip=g=>`<span class="chip">${GX[g]()}</span>`;
 const phrase=(chips,say,sub)=>`<div class="phrase"><div class="chips">${chips.map(c=>c==='+'?'<span class="plus">+</span>':chip(c)).join('')}</div><div class="say">${say}<small>${sub}</small></div></div>`;
@@ -202,9 +200,13 @@ const wrap10=n=>((n-1)%10+10)%10+1;
 
 const BODY={
 1:()=>`
+<section class="block"><h2>Числа</h2><p class="hint">Столько пальцев, какое число. 10 — кулак, больше 10 — кулак + число.</p>
+<div class="glist">
+${gi('d3','число','Три','Три пальца. Так же показываются все числа до 9.')}
+${gi('d11','число','Одиннадцать','Кулак + один палец: 10 + 1.')}
+</div></section>
 <section class="block"><h2>Номер и роль</h2><p class="hint">Сначала номер места, потом роль: «этот игрок — такой-то». Ладонь к столу, держим жест секунду-две, чтобы все успели прочитать.</p>
 <div class="glist">
-${gi('d4','номер','Номер игрока','Столько пальцев, какой номер; на рисунке 4. От 6 до 9 — ладонь плюс остаток второй рукой, 10 — две ладони или кулак, как договоритесь.')}
 ${gi('civ','красные','Мирный','Кулак, большой палец вверх.')}
 ${gi('maf','чёрные','Мафия','Кулак, большой палец вниз.')}
 ${gi('don','чёрные','Дон','Большой палец на безымянном, будто поправляешь перстень.')}
@@ -216,15 +218,14 @@ ${gi('sher','красные','Шериф','Большой и указатель�
 ${gi('ask','жест','Вопрос','Указательный изогнут крючком, как «?». Обращаешься к конкретному игроку.')}
 ${gi('slap','жест','Выставляй','Номер, палец вверх и короткий хлопок по столу: «вынеси его на голосование».')}
 ${gi('ifg','жест','Если','Большой палец и мизинец в стороны. Начинает условие.')}
-${gi('agree','жест','Согласен','Кивок или палец вверх в ответ на чужой жест.')}
-${gi('cross','жест','Не согласен','Покачать головой или скрестить руки.')}
+${gi('cross','жест','Нет','Покачать головой или скрестить руки.')}
+${gi('gun','жест','Пистолет','Указательный вперёд, большой вверх. С номером — «стреляйте в него».')}
 </div></section>
 <section class="block"><h2>Фразы</h2><p class="hint">Порядок как в речи: о ком, что, вопрос или вывод.</p>
 <div class="phrases">
-${phrase(['d7','+','don','+','ask'],'«Седьмой — дон?»','Спрашиваешь мнение собеседника')}
-${phrase(['d4','+','maf'],'«Четвёртый — мафия»','Твоя версия для всего стола')}
-${phrase(['d2','+','sher','+','agree'],'«Верю, что второй — шериф»','Поддерживаешь чужое вскрытие')}
-${phrase(['ifg','+','d6','+','civ','+','d9','+','slap'],'«Если шестой мирный — выставляй девятого»','Условие из двух частей')}
+${phrase(['d3','+','don','+','ask'],'«Третий — дон?»','Спрашиваешь мнение собеседника')}
+${phrase(['d11','+','maf'],'«Одиннадцатый — мафия»','Твоя версия для всего стола')}
+${phrase(['ifg','+','d3','+','civ','+','d11','+','slap'],'«Если третий мирный — выставляй одиннадцатого»','Условие из двух частей')}
 </div></section>`,
 3:()=>`
 <section class="block"><h2>Зачем</h2><p class="hint">Первый номер говорит речь в самом начале круга и потом почти до голосования молчит. Попил превращает голосование в проверку.</p>
@@ -241,10 +242,10 @@ ${phrase(['ifg','+','d6','+','civ','+','d9','+','slap'],'«Если шестой
 4:()=>`
 <section class="block"><h2>Три жеста дона</h2><p class="hint">Ночью, пока стол «спит», у мафии есть несколько секунд.</p>
 <div class="glist">
-${gi('wave','шаг 1','Старт','Ладони ходят из стороны в сторону: договорка началась.')}
+${gi('wave','шаг 1','Ахалай-махалай','Дон машет ладонями — привлекает внимание команды. Сигнал: «начинаем договорку».')}
 ${gi('plus','шаг 2','Плюс','Два пальца крестом: отсчитываем вперёд по столу.')}
 ${gi('minus','шаг 2','Минус','Один палец горизонтально: отсчитываем назад.')}
-${gi('d2','шаг 3','Смещение','Цифра: на сколько мест сдвинуться от базы.')}
+${gi('d3','шаг 3','Смещение','Цифра: на сколько мест сдвинуться от базы.')}
 </div></section>
 <section class="block"><h2>Откуда база</h2>
 <ol class="steps">
@@ -253,21 +254,7 @@ ${gi('d2','шаг 3','Смещение','Цифра: на сколько мес�
 <li><div><b>Дон за день не показал ничего</b> — стреляем в первого по столу самого красного игрока.</div></li>
 </ol></section>
 <section class="block"><h2>Считаем цель</h2><p class="hint">Цель = база ± смещение. После 10 снова идёт 1.</p>
-<div class="tool">${stepper('g-base','База',7,1,10)}<div class="field"><label id="g-sign-l">Знак</label><div class="seg" role="group" aria-labelledby="g-sign-l"><button type="button" data-sign="1" aria-pressed="true">+</button><button type="button" data-sign="-1" aria-pressed="false">−</button></div></div>${stepper('g-off','Смещение',2,0,9)}${result('g-res','Стреляем в')}</div></section>`,
-5:()=>`
-<section class="block"><h2>Три части</h2><p class="hint">Всё оговаривается на договорке. Для красных это выглядит как обычные жесты.</p>
-<div class="glist">
-${gi('hook','знак','Значок с крюком','Значок шерифа, мизинец согнут крючком. Его знают все чёрные.')}
-${gi('eye','триггер','Палец под глазом','Любое естественное движение, о котором договорились: следующая цифра — хук.')}
-${gi('d2','сдвиг','Сдвиг','Показанная цифра + сдвиг = номер шерифа.')}
-</div></section>
-<section class="block"><h2>Кто и когда</h2>
-<ol class="steps">
-<li><div><b>Дон ночью нашёл шерифа:</b> делает триггер и показывает цифру. Без триггера цифра означает просто мирного.</div></li>
-<li><div><b>Любой чёрный днём:</b> шериф вскрылся ему или он видел вскрытие — делает триггер и вплетает цифру в обычный разговор.</div></li>
-</ol></section>
-<section class="block"><h2>Расшифровка</h2>
-<div class="tool">${stepper('h-dig','Показанная цифра',8,1,10)}${stepper('h-sh','Сдвиг',2,0,9)}${result('h-res','Шериф')}</div></section>`
+<div class="tool">${stepper('g-base','База',7,1,10)}<div class="field"><label id="g-sign-l">Знак</label><div class="seg" role="group" aria-labelledby="g-sign-l"><button type="button" data-sign="1" aria-pressed="true">+</button><button type="button" data-sign="-1" aria-pressed="false">−</button></div></div>${stepper('g-off','Смещение',2,0,9)}${result('g-res','Стреляем в')}</div></section>`
 };
 
 /* ---------- страницы ---------- */
@@ -279,7 +266,7 @@ function home(){
    +`<a class="step" href="#trainer"><div class="star">${STAR}<span style="color:var(--red)">✓</span></div><div class="side"><span class="grp">Практика</span><h3>Тренажёр</h3><p>Случайный жест и четыре варианта ответа. Прогоните перед первой игрой.</p><span class="go">Проверить себя →</span></div></a>`
    +`<a class="step" href="#challenge"><div class="star">${STAR}<span style="color:var(--red)">✓✓</span></div><div class="side"><span class="grp">Практика</span><h3>Испытание</h3><p>Два жеста подряд — одна фраза. Прочитай, что сказал игрок.</p><span class="go">Принять вызов →</span></div></a>`;
   return `<div class="hero">${ARROW}<div class="pillrow"><span class="pill">Гайд</span></div>
-<p class="caps kicker">Язык жестов мафии</p><h1><em>в пяти</em> <span class="up">шагах</span></h1>
+<p class="caps kicker">Язык жестов мафии</p><h1><em>в четырёх</em> <span class="up">шагах</span></h1>
 <p class="lead">Говорить можно только в свою минуту. Всё остальное время стол разговаривает руками: номера, версии, вопросы и согласие. Идите по порядку — каждый шаг опирается на предыдущие.</p></div>
 <div class="road">${steps}</div>`;
 }
@@ -291,8 +278,8 @@ function stage(i){
 <h1 style="font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,60px);line-height:1.05;margin:0;text-wrap:balance"><em style="font-weight:500">${s.t[0]}</em> <span style="text-transform:uppercase">${s.t[1]}</span></h1><p class="lead">${s.sum}</p></div>
 ${BODY[i]()}<div class="pager">${prev}${next}</div>`;
 }
-const QUIZ=[['d1','1'],['d2','2'],['d3','3'],['d4','4'],['d5','5'],['d7','7'],['d9','9'],
- ['civ','Мирный'],['maf','Мафия'],['don','Дон'],['sher','Шериф'],['ask','Вопрос'],['ifg','Если'],['cross','Не согласен'],['wave','Старт договорки'],['hook','Хук']];
+const QUIZ=[['d3','3'],['d11','11'],
+ ['civ','Мирный'],['maf','Мафия'],['don','Дон'],['sher','Шериф'],['ask','Вопрос'],['ifg','Если'],['cross','Нет'],['slap','Выставляй'],['gun','Пистолет'],['wave','Ахалай-махалай'],['plus','Плюс'],['minus','Минус']];
 const Q={t:{ok:0,all:0,ans:null},c:{ok:0,all:0,ans:null}};
 let mode='t';
 const quizHead=(pill,kick,em,up,lead)=>`<div class="stagehead"><span class="pill">${pill}</span><p class="caps kicker">${kick}</p><h1 style="font-family:var(--serif);font-weight:400;font-size:clamp(38px,6vw,60px);line-height:1.05;margin:0"><em style="font-weight:500">${em}</em> <span style="text-transform:uppercase">${up}</span></h1><p class="lead">${lead}</p></div>`;
@@ -300,7 +287,7 @@ const quizBody=(fig,btn,cls)=>`<section class="block"><div class="quiz${cls}">${
 function trainer(){
   return quizHead('Практика','Проверить себя','угадай','жест','Что показывает рука? Счёт сбрасывается при обновлении страницы.')
    +quizBody('<div class="qfig" id="qfig"></div>','Следующий жест','')
-   +`<div class="pager"><a href="#stage-5">← Хук</a><a class="next" href="#challenge">Испытание →</a></div>`;
+   +`<div class="pager"><a href="#stage-4">← Договорка</a><a class="next" href="#challenge">Испытание →</a></div>`;
 }
 function challenge(){
   return quizHead('Испытание','Две руки — одна фраза','прочитай','фразу','Два жеста подряд складываются в предложение. Выбери, что сказал игрок.')
@@ -308,23 +295,23 @@ function challenge(){
    +`<div class="pager"><a href="#trainer">← Тренажёр</a><a class="next" href="#">Все шаги →</a></div>`;
 }
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
-const ORD=['','Первый','Второй','Третий','Четвёртый','Пятый','Шестой','Седьмой','Восьмой','Девятый','Десятый'];
-const ACC=['','первого','второго','третьего','четвёртого','пятого','шестого','седьмого','восьмого','девятого','десятого'];
-const INS=['','первым','вторым','третьим','четвёртым','пятым','шестым','седьмым','восьмым','девятым','десятым'];
+const NUMS=[3,11]; /* только числа, для которых есть фото */
+const ORD={3:'Третий',11:'Одиннадцатый'};
+const ACC={3:'третьего',11:'одиннадцатого'};
 const ROLES={civ:'мирный',maf:'мафия',don:'дон',sher:'шериф'};
 const RK=Object.keys(ROLES);
 const KIND={
   role:(n,r)=>({g:['d'+n,r],a:`${ORD[n]} — ${ROLES[r]}`}),
   ask:(n,r)=>({g:['ask',r],a:`Кто ${ROLES[r]}?`}),
   slap:(n)=>({g:['d'+n,'slap'],a:`Выставляй ${ACC[n]}`}),
-  agree:(n)=>({g:['d'+n,'agree'],a:`Согласен с ${INS[n]}`}),
-  cross:(n)=>({g:['d'+n,'cross'],a:`Не согласен с ${INS[n]}`})
+  cross:(n)=>({g:['d'+n,'cross'],a:`${ORD[n]} — нет`}),
+  gun:(n)=>({g:['d'+n,'gun'],a:`Стреляйте в ${ACC[n]}`})
 };
-const KW=['role','role','role','ask','slap','agree','cross'];
-function makeC(){const k=rnd(KW),n=1+Math.floor(Math.random()*10),r=rnd(RK);return {k,n,r,...KIND[k](n,r)};}
+const KW=['role','role','role','ask','slap','cross','gun'];
+function makeC(){const k=rnd(KW),n=rnd(NUMS),r=rnd(RK);return {k,n,r,...KIND[k](n,r)};}
 function distractor(c){
   const t=Math.random();
-  if(t<.4)return KIND[c.k](1+Math.floor(Math.random()*10),c.r);
+  if(t<.4)return KIND[c.k](rnd(NUMS),c.r);
   if(t<.75)return KIND[c.k](c.n,rnd(RK));
   return KIND[rnd(Object.keys(KIND))](c.n,c.r);
 }
@@ -343,10 +330,9 @@ function newQ(){
     document.getElementById('qfig2').innerHTML=GX[c.g[1]]();
     setOpts(opts);return;
   }
-  const pick=QUIZ[Math.floor(Math.random()*QUIZ.length)], isNum=/^\d+$/.test(pick[1]);
-  const pool=QUIZ.filter(q=>q!==pick&&(/^\d+$/.test(q[1])===isNum||Math.random()<.3));
+  const pick=rnd(QUIZ), pool=QUIZ.map(q=>q[1]);
   const opts=[pick[1]];
-  while(opts.length<4){const o=rnd(pool)[1];if(!opts.includes(o))opts.push(o);}
+  while(opts.length<4){const o=rnd(pool);if(!opts.includes(o))opts.push(o);}
   Q.t.ans=pick[1];
   document.getElementById('qfig').innerHTML=GX[pick[0]]();
   setOpts(opts);
@@ -372,7 +358,6 @@ let gSign=1;
 function calc(){
   const set=(id,v,w)=>{document.getElementById(id).textContent=v;document.getElementById(id+'-why').textContent=w;};
   if(document.getElementById('g-res')){const b=val('g-base'),o=val('g-off'),r=wrap10(b+gSign*o);set('g-res',r,`${b} ${gSign>0?'+':'−'} ${o} → место ${r}`);}
-  if(document.getElementById('h-res')){const d=val('h-dig'),s=val('h-sh'),r=wrap10(d+s);set('h-res',r,`${d} + ${s} → место ${r}`);}
 }
 app.addEventListener('click',e=>{
   const st=e.target.closest('[data-step]');
@@ -391,7 +376,7 @@ app.addEventListener('click',e=>{
   if(e.target.id==='qnext')newQ();
 });
 function route(){
-  const h=location.hash.slice(1),m=h.match(/^stage-([1-5])$/);let cur=null;
+  const h=location.hash.slice(1),m=h.match(/^stage-([1-4])$/);let cur=null;
   if(m){cur=+m[1];app.innerHTML=stage(cur);}
   else if(h==='trainer'){cur='t';mode='t';app.innerHTML=trainer();newQ();}
   else if(h==='challenge'){cur='c';mode='c';app.innerHTML=challenge();newQ();}
